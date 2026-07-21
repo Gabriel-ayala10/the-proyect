@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Académico de Gestión y Control</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+</head>
+<body>
+
+    <!-- Encabezado / Navegación -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <span class="material-symbols-outlined logo-icon">school</span>
+                <h2>Sistema Académico</h2>
+            </div>
+            <div id="userBadge" class="user-badge hidden">
+                <span class="material-symbols-outlined">person</span>
+                <span id="lblUsuario">Usuario</span>
+                <button onclick="cerrarSesion()" class="btn-logout" title="Cerrar Sesión">
+                    <span class="material-symbols-outlined">logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+
+        <!-- 1. PANTALLA DE LOGIN -->
+        <section id="loginSection" class="card login-card">
+            <div class="card-header">
+                <h2>Iniciar Sesión</h2>
+                <p>Ingresa tus credenciales para acceder</p>
+            </div>
+            
+            <!-- Mensaje de error si falla el login -->
+            <div id="loginError" class="alert-error hidden">
+                <span class="material-symbols-outlined">error</span>
+                <span>Usuario o contraseña incorrectos. Inténtalo de nuevo.</span>
+            </div>
+
+            <form id="loginForm" onsubmit="validarLogin(event)">
+                <div class="form-group">
+                    <label for="txtUsuario">Usuario</label>
+                    <div class="input-icon">
+                        <span class="material-symbols-outlined">account_circle</span>
+                        <input type="text" id="txtUsuario" placeholder="Ej: docente" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="txtPassword">Contraseña</label>
+                    <div class="input-icon">
+                        <span class="material-symbols-outlined">lock</span>
+                        <input type="password" id="txtPassword" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">
+                    <span>Ingresar</span>
+                    <span class="material-symbols-outlined">login</span>
+                </button>
+            </form>
+
+            <div class="demo-box">
+                <small><strong>Credenciales de prueba:</strong></small><br>
+                <small>Usuario: <code>admin</code> | Contraseña: <code>123456</code></small>
+            </div>
+        </section>
+
+
+        <!-- 2. PANTALLA DE LOBBY / MENÚ PRINCIPAL -->
+        <section id="lobbySection" class="card hidden">
+            <div class="card-header">
+                <h2>Panel Principal (Lobby)</h2>
+                <p>Selecciona una de las siguientes opciones para gestionar el sistema:</p>
+            </div>
+
+            <div class="grid-menu">
+                <div class="menu-card" onclick="mostrarSeccion('estudiantesSection')">
+                    <span class="material-symbols-outlined menu-icon">badge</span>
+                    <h3>Registro de Estudiantes</h3>
+                    <p>Ver y gestionar la lista de estudiantes matriculados.</p>
+                </div>
+
+                <div class="menu-card" onclick="mostrarSeccion('notasSection')">
+                    <span class="material-symbols-outlined menu-icon">grade</span>
+                    <h3>Notas y Calificaciones</h3>
+                    <p>Consultar las notas por unidad y promedios finales.</p>
+                </div>
+
+                <div class="menu-card" onclick="mostrarSeccion('faltasSection')">
+                    <span class="material-symbols-outlined menu-icon">event_busy</span>
+                    <h3>Control de Faltas</h3>
+                    <p>Revisar el registro de inasistencias y tardanzas.</p>
+                </div>
+
+                <div class="menu-card" onclick="mostrarSeccion('reportesSection')">
+                    <span class="material-symbols-outlined menu-icon">analytics</span>
+                    <h3>Reportes Generales</h3>
+                    <p>Generar resúmenes consolidados del rendimiento y asistencia.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 3. MÓDULO: REGISTRO DE ESTUDIANTES -->
+        <section id="estudiantesSection" class="card hidden">
+            <div class="card-header flex-between">
+                <h2>Registro de Estudiantes</h2>
+                <button onclick="volverAlLobby()" class="btn btn-secondary">
+                    <span class="material-symbols-outlined">arrow_back</span> Volver al Lobby
+                </button>
+            </div>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Nombres y Apellidos</th>
+                            <th>DNI</th>
+                            <th>Programa de Estudios</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaEstudiantes"></tbody>
+                </table>
+            </div>
+        </section>
+
+
+        <!-- 4. MÓDULO: NOTAS Y CALIFICACIONES -->
+        <section id="notasSection" class="card hidden">
+            <div class="card-header flex-between">
+                <h2>Calificaciones y Notas</h2>
+                <button onclick="volverAlLobby()" class="btn btn-secondary">
+                    <span class="material-symbols-outlined">arrow_back</span> Volver al Lobby
+                </button>
+            </div>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Estudiante</th>
+                            <th>Unidad 1</th>
+                            <th>Unidad 2</th>
+                            <th>Unidad 3</th>
+                            <th>Promedio Final</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaNotas"></tbody>
+                </table>
+            </div>
+        </section>
+
+
+        <!-- 5. MÓDULO: CONTROL DE FALTAS -->
+        <section id="faltasSection" class="card hidden">
+            <div class="card-header flex-between">
+                <h2>Control de Faltas e Inasistencias</h2>
+                <button onclick="volverAlLobby()" class="btn btn-secondary">
+                    <span class="material-symbols-outlined">arrow_back</span> Volver al Lobby
+                </button>
+            </div>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Estudiante</th>
+                            <th>Asistencias</th>
+                            <th>Tardanzas</th>
+                            <th>Faltas</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaFaltas"></tbody>
+                </table>
+            </div>
+        </section>
+
+
+        <!-- 6. MÓDULO: REPORTES -->
+        <section id="reportesSection" class="card hidden">
+            <div class="card-header flex-between">
+                <h2>Reportes Consolidados</h2>
+                <button onclick="volverAlLobby()" class="btn btn-secondary">
+                    <span class="material-symbols-outlined">arrow_back</span> Volver al Lobby
+                </button>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <h4>Total Estudiantes</h4>
+                    <p id="statTotal">0</p>
+                </div>
+                <div class="stat-box">
+                    <h4>Promedio General</h4>
+                    <p id="statPromedio">0.0</p>
+                </div>
+                <div class="stat-box warning">
+                    <h4>Estudiantes con Faltas</h4>
+                    <p id="statFaltas">0</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
